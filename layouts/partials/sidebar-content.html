@@ -10,28 +10,56 @@
 		</div>
 		{{ end }}
 
+		<!-- Language Selector -->
+		<ul class="sidebar-menus">
+			{{ range .Translations }}
+				<li>
+					<a href="{{ .Page.RelPermalink }}">
+						{{ .Language.LanguageName }}
+					</a>
+				</li>
+			{{ end }}
+		</ul>
+
+		<!-- Menu -->
 		<ul class="sidebar-menus">
 			{{ range .Site.Menus.main }}
-				<li>&#187; <a href="{{.URL}}">{{ .Name }}</a> {{ .Post }}</li>
-			{{end}}
+				<li>&#187; <a href="{{ .URL }}">{{ .Name }}</a> {{ .Post }}</li>
+				{{ if .Children }}
+					<ul>
+						{{ range .Children }}
+							<li><a href="{{ .URL }}">{{ .Name }}</a> {{ .Post }}</li>
+						{{ end }}
+					</ul>
+				{{ end }}
+			{{ end }}
 		</ul>
 
 		<div class="sidebar-recent hidden-xs">
-			<p>Recent Posts:</p>
+			<p>Recently Changed</p>
 			<ul>
-				{{ range first 5 .Site.Pages }}
-				<li><a href="{{.Permalink}}">{{ .Title }}</a></li>
+				{{ range first 5 .Site.Pages.ByLastmod.Reverse }}
+					{{ if .Content }}
+						<li><a href="{{ .Permalink }}">{{ .Title }}</a></li>
+					{{ end }}
 				{{ end }}
 			</ul>
 		</div>
 
-		{{ if .Site.Params.contact_email }}
+		{{ if .Site.Params.author.email }}
 		<div class="sidebar-contact">
-			&#187; <a href="mailto:{{ .Site.Params.contact_email }}">Email Us</a>
+			&#187; <a href="mailto:{{ .Site.Params.author.email }}">Email Us</a>
 		</div>
 		{{ end }}
 
-		<p class="copyright">{{ with .Site.Params.copyright }}{{ . }}{{ else }}&copy; {{ now.Format "2006" }}. All rights reserved. {{end}}</p>
-		<p class="attr">Powered by <a href="http://gohugo.io">Hugo</a> &amp; <a href="https://github.com/ExchangeRate-API/strange-case">Strange Case</a> (inspired by <a href="https://github.com/poole/hyde">Hyde</a>).</p>
+		<p class="copyright">{{ with .Site.Params.copyright | safeHTML }}{{ . }}{{ else }}&copy; {{ now.Format "2006" }}. All rights reserved. {{end}}</p>
+		<p class="attr">
+			Git Commit ID: 
+			{{ with .GitInfo }}
+				{{ .AbbreviatedHash }}
+			{{ else }}
+				(N/A)
+			{{ end }} <br />
+			Generator: <a href="http://gohugo.io">Hugo</a>; Theme: <a href="https://github.com/ExchangeRate-API/strange-case">Strange Case</a> (<a href="https://github.com/aslemen/hugo-strange-case">modified</a>)</p>
 
 	</div>

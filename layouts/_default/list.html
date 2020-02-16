@@ -8,17 +8,28 @@
 
 			</div>
 			<div class="col-sm-7 col-sm-offset-4 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-3 content">
+				
+				<h1>{{ .Title }}</h1>
+				
+				<hr />
 
 				{{ range .Paginator.Pages }}
 				<div class="post">
-
 					<div class="post-heading">
 						<h1><a href="{{ .Permalink }}">{{ .Title }}</a></h1>
-						<span>{{ .Date.Format "Jan 2, 2006" }}{{ if .Params.author }} by {{ .Params.author }}{{ end }}</span>
+						<span class="post-date">
+							Pub {{ .Date.Format "2006-01-02" }};
+							LastMod {{ .Lastmod.Format "2006-01-02" }}
+							{{ if .Params.author }} 
+								; Author {{ .Params.author }}
+							{{ end }}
+						</span>
 					</div>
 
-					{{ .Content }}
-
+					{{ .Summary }}
+					{{ if .Truncated }}
+						(...)
+					{{ end }}
 				</div>
 				{{ end }}
 
